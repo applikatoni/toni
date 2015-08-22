@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/applikatoni/toni.svg?branch=master)](https://travis-ci.org/applikatoni/toni)
+
 toni is the CLI for Applikatoni.
 
 Usage:
