@@ -34,10 +34,10 @@ Arguments:
 
 	OPTIONAL:
 
-	-c      The deployment commit SHA
+	-c		The deployment commit SHA
 			(if unspecified toni uses the current git HEAD)
 
-	-b      The branch of the commit SHA
+	-b		The branch of the commit SHA
 			(if unspecified toni uses the current git HEAD)
 
 Configuration:
