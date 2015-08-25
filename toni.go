@@ -16,6 +16,7 @@ const (
 	apiTokenHeaderName    = "X-Api-Token"
 	gitBranchCmd          = "git symbolic-ref --short HEAD"
 	gitCommitCmd          = "git rev-parse HEAD"
+	gitUnpushedCmd        = "git cherry -v"
 )
 
 var usage = `toni is the CLI for Applikatoni.
@@ -146,6 +147,20 @@ func main() {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			os.Exit(1)
 		}
+	}
+
+	unpushed, err := runGitCmd(gitUnpushedCmd)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
+	}
+	if strings.Contains(unpushed, commitSHA) {
+		fmt.Fprintf(os.Stderr, "ERROR: %s has not been pushed to remote\n", commitSHA)
+		os.Exit(1)
+	}
+	if unpushed != "" {
+		fmt.Fprintf(os.Stderr, "WARNING: These commits have not been pushed to remote\n")
+		fmt.Fprintf(os.Stderr, "%s\n", unpushed)
 	}
 
 	currentDeploymentMx = &sync.Mutex{}
