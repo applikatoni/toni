@@ -130,6 +130,10 @@ func main() {
 
 	if target == "" {
 		fmt.Fprintf(os.Stderr, "No target specified (use -t option to specify target)\n")
+		fmt.Fprintf(os.Stderr, "\nTargets configured in .toni.yml:\n")
+		for target, _ := range config.Stages {
+			fmt.Fprintf(os.Stderr, "%s\n", target)
+		}
 		os.Exit(1)
 	}
 
