@@ -25,7 +25,7 @@ var usage = `toni is the CLI for Applikatoni.
 
 Usage:
 
-	toni [-c=<commit SHA>] [-b=<commit branch>] -t <target> -m <comment>
+	toni [-vh] [-c=<commit SHA>] [-b=<commit branch>] -t <target> -m <comment>
 
 Arguments:
 
@@ -43,28 +43,31 @@ Arguments:
 	-b		The branch of the commit SHA
 			(if unspecified toni uses the current git HEAD)
 
+	-h		Print the help and usage information
+	-v		Print the version of the toni executable
+
 Configuration:
 
-When starting up, toni tries to read the ".toni.yml" configuration file in the
-current working directoy. The configuration MUST specify the HOST, APPLICATION,
-API TOKEN and the STAGES of deployments.
+	When starting up, toni tries to read the ".toni.yml" configuration file in
+	the current working directoy. The configuration MUST specify the HOST,
+	APPLICATION, API TOKEN and the STAGES of deployments.
 
-An example ".toni.yml" looks like this:
+	An example ".toni.yml" looks like this:
 
-	host: http://toni.shippingcompany.com
-	application: shippingcompany-main-application
-	api_token: 4fdd575f-FOOO-BAAR-af1e-ce3e9f75367d
-	stages:
-	  production:
-		- CHECK_CONNECTION
-		- PRE_DEPLOYMENT
-		- CODE_DEPLOYMENT
-		- POST_DEPLOYMENT
-	  staging:
-		- CHECK_CONNECTION
-		- PRE_DEPLOYMENT
-		- CODE_DEPLOYMENT
-		- POST_DEPLOYMENT
+		host: http://toni.shippingcompany.com
+		application: shippingcompany-main-application
+		api_token: 4fdd575f-FOOO-BAAR-af1e-ce3e9f75367d
+		stages:
+		production:
+			- CHECK_CONNECTION
+			- PRE_DEPLOYMENT
+			- CODE_DEPLOYMENT
+			- POST_DEPLOYMENT
+		staging:
+			- CHECK_CONNECTION
+			- PRE_DEPLOYMENT
+			- CODE_DEPLOYMENT
+			- POST_DEPLOYMENT
 `
 
 var (
@@ -73,7 +76,8 @@ var (
 	branch    string
 	commitSHA string
 
-	printHelp bool
+	printVersion bool
+	printHelp    bool
 )
 
 var (
@@ -88,10 +92,16 @@ func init() {
 	flag.StringVar(&branch, "b", "", "Deployment branch")
 
 	flag.BoolVar(&printHelp, "h", false, "Print the help and usage information")
+	flag.BoolVar(&printVersion, "v", false, "Print the version of the toni executable")
 }
 
 func main() {
 	flag.Parse()
+	if printVersion {
+		fmt.Println(VERSION)
+		os.Exit(0)
+	}
+
 	if printHelp {
 		printUsage()
 		os.Exit(0)
