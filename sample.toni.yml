@@ -1,15 +1,15 @@
-host: http://localhost:8080
-application: flincOnRails
-api_token: 4fdd575f-342e-4f6b-af1e-ce3e9f75367d
+host: https://applikatoni.shipping-company.com
+application: main-web-app
+api_token: 4fdd575f-F000-B44R-af1e-ce3e9f75367d
 stages:
   staging:
-    - CHECK_CONNECTION
-    - PRE_DEPLOYMENT
-    - CODE_DEPLOYMENT
-    - POST_DEPLOYMENT
+    - FETCH_CODE
+    - LINK_CONFIG_FILES
+    - PREPARE_ASSETS
+    - RESTART_SERVER
   production:
-    - CHECK_CONNECTION
-    - PRE_DEPLOYMENT
-    - CODE_DEPLOYMENT
-    - COMPILE_ASSETS
-    - POST_DEPLOYMENT
+    - QUIET_WORKERS
+    - FETCH_CODE
+    - LINK_CONFIG_FILES
+    - PREPARE_ASSETS
+    - RESTART_SERVER
