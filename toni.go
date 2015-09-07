@@ -12,6 +12,8 @@ import (
 )
 
 const (
+	VERSION = "1.0.0"
+
 	configurationFileName = ".toni.yml"
 	apiTokenHeaderName    = "X-Api-Token"
 	gitBranchCmd          = "git symbolic-ref --short HEAD"

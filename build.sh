@@ -3,17 +3,19 @@
 
 set -e
 
-target="toni-$(go env GOOS)-$(go env GOARCH)"
+version=$(cat toni.go | grep "VERSION\s*=" | awk '{print $NF}' | sed 's/\"//g')
+target="toni-${version}-$(go env GOOS)-$(go env GOARCH)"
 executable="toni"
-current_revision=$(git rev-parse HEAD)
 
+rm -rf ./builds/$target
 mkdir ./builds/$target
 
 go build -o ./builds/$target/$executable ./ || exit 1
 
 cp ./README.md ./builds/$target/
-cp ../LICENSE ./builds/$target/
-echo ${current_revision} >> ./builds/$target/VERSION
+cp ./LICENSE ./builds/$target/
+cp ./sample.toni.yml ./builds/$target/
+echo ${version} >> ./builds/$target/VERSION
 
 tar czvfC ./builds/$target.tar.gz ./builds $target
 
