@@ -261,21 +261,23 @@ func killCurrentDeployment(c *Configuration) {
 	currentDeploymentMx.Lock()
 	defer currentDeploymentMx.Unlock()
 
-	if currentDeploymentLocation != "" {
-		fmt.Printf("\nReceived INTERRUPT - ")
-		fmt.Printf("Sending kill request to server (%s)...\n\n",
-			currentDeploymentLocation)
+	if currentDeploymentLocation == "" {
+		return
+	}
 
-		killURL, err := buildDeploymentKillURL(c.Host, currentDeploymentLocation)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Killing deployment failed: %s\n", err)
-			return
-		}
+	fmt.Printf("\nReceived INTERRUPT - ")
+	fmt.Printf("Sending kill request to server (%s)...\n\n",
+		currentDeploymentLocation)
 
-		err = killDeployment(c, killURL)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Killing deployment failed: %s\n", err)
-			return
-		}
+	killURL, err := buildDeploymentKillURL(c.Host, currentDeploymentLocation)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Killing deployment failed: %s\n", err)
+		return
+	}
+
+	err = killDeployment(c, killURL)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Killing deployment failed: %s\n", err)
+		return
 	}
 }
