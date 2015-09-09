@@ -4,6 +4,12 @@
 
 toni is the CLI for Applikatoni.
 
+## Installation
+
+### Installing using `go get`
+
+        go get github.com/applikatoni/toni
+
 ## Usage
 
     toni [-vh] [-c=<commit SHA>] [-b=<commit branch>] -t <target> -m <comment>
