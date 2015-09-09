@@ -6,6 +6,11 @@ toni is the CLI for Applikatoni.
 
 ## Installation
 
+### Download a packaged version
+
+See the [Releases](https://github.com/applikatoni/toni/releases) section
+and download a packaged version of Applikatoni.
+
 ### Installing using `go get`
 
         go get github.com/applikatoni/toni
