@@ -2,3 +2,4 @@ toni
 .toni.yml
 builds/*
 !builds/.gitkeep
+.vagrant
