@@ -14,6 +14,7 @@ go build -o ./builds/$target/$executable ./ || exit 1
 
 cp ./README.md ./builds/$target/
 cp ./LICENSE ./builds/$target/
+cp ./CHANGELOG.md ./builds/$target/
 cp ./sample.toni.yml ./builds/$target/
 echo ${version} >> ./builds/$target/VERSION
 
