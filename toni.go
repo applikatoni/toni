@@ -187,7 +187,7 @@ func main() {
 		killCurrentDeployment(config)
 	}()
 
-	fmt.Println("Creating deployment...\n")
+	fmt.Print("Creating deployment...\n\n")
 	printDeploymentAttribute("host", config.Host)
 	printDeploymentAttribute("application", config.Application)
 	printDeploymentAttribute("target", target)
@@ -209,7 +209,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("\nSuccessfully created. Streaming logs...\n")
+	fmt.Print("\nSuccessfully created. Streaming logs...\n\n")
 
 	setCurrentDeploymentLocation(deploymentLocation)
 
