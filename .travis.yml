@@ -1,5 +1,7 @@
 sudo: false
 language: go
+before_script: go get golang.org/x/tools/cmd/vet
+script: go test -v ./... && go vet ./...
 go:
   - 1.4
   - 1.5
