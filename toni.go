@@ -25,7 +25,7 @@ var usage = `toni is the CLI for Applikatoni.
 
 Usage:
 
-	toni [-vh] [-c=<commit SHA>] [-b=<commit branch>] -t <target> -m <comment>
+	toni [-vhd] [-c=<commit SHA>] [-b=<commit branch>] -t <target> -m <comment>
 
 Arguments:
 
@@ -42,6 +42,8 @@ Arguments:
 
 	-b		The branch of the commit SHA
 			(if unspecified toni uses the current git HEAD)
+
+	-d		Make a dry run. See what will be deployed by showing diff.
 
 	-h		Print the help and usage information
 	-v		Print the version of the toni executable
@@ -76,6 +78,7 @@ var (
 	branch    string
 	commitSHA string
 
+	dryRun       bool
 	printVersion bool
 	printHelp    bool
 )
@@ -91,6 +94,7 @@ func init() {
 	flag.StringVar(&commitSHA, "c", "", "Deployment commit")
 	flag.StringVar(&branch, "b", "", "Deployment branch")
 
+	flag.BoolVar(&dryRun, "d", false, "Dry run. See what will be deployed")
 	flag.BoolVar(&printHelp, "h", false, "Print the help and usage information")
 	flag.BoolVar(&printVersion, "v", false, "Print the version of the toni executable")
 }
@@ -187,7 +191,12 @@ func main() {
 		killCurrentDeployment(config)
 	}()
 
-	fmt.Print("Creating deployment...\n\n")
+	if dryRun {
+		fmt.Printf("Dry run. Showing diff...\n\n")
+	} else {
+		fmt.Print("Creating deployment...\n\n")
+	}
+
 	printDeploymentAttribute("host", config.Host)
 	printDeploymentAttribute("application", config.Application)
 	printDeploymentAttribute("target", target)
@@ -195,6 +204,23 @@ func main() {
 	printDeploymentAttribute("branch", branch)
 	printDeploymentAttribute("comment", comment)
 	printDeploymentAttribute("stages", strings.Join(config.Stages[target], ", "))
+
+	if dryRun {
+		diffUrl, err := buildDeploymentDiffURL(config.Host, config.Application, target, commitSHA)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+			os.Exit(1)
+		}
+		diff, err := getDeploymentDiff(config, diffUrl)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "creating a deployment failed: %s\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("\n\n")
+		printFormattedDiff(diff)
+
+		os.Exit(0)
+	}
 
 	deploymentURL, err := buildDeploymentURL(config.Host, config.Application)
 	if err != nil {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -128,6 +129,40 @@ func buildDeploymentKillURL(hostURL, deploymentPath string) (*url.URL, error) {
 	}
 	u.Path = path.Join(deploymentPath, "kill")
 	return u, nil
+}
+
+func buildDeploymentDiffURL(hostURL, applicationName, target, sha string) (*url.URL, error) {
+	u, err := url.Parse(hostURL)
+	if err != nil {
+		return nil, err
+	}
+	u.Path = path.Join(applicationName, "diff")
+
+	q := u.Query()
+	q.Set("sha", sha)
+	q.Set("target", target)
+	u.RawQuery = q.Encode()
+
+	return u, nil
+}
+
+func getDeploymentDiff(c *Configuration, deploymentDiffURL *url.URL) (*Diff, error) {
+	req, err := http.NewRequest("GET", deploymentDiffURL.String(), nil)
+	req.Header.Set(apiTokenHeaderName, c.ApiToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultTransport.RoundTrip(req)
+	if err != nil {
+		return nil, err
+	}
+
+	diff := &Diff{}
+	err = json.NewDecoder(resp.Body).Decode(diff)
+	if err != nil {
+		return nil, err
+	}
+
+	return diff, nil
 }
 
 func killDeployment(c *Configuration, deploymentKillURL *url.URL) error {
